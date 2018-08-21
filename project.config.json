@@ -1,0 +1,16 @@
+{
+	"miniprogramRoot": "dist",
+	"description": "项目配置文件。",
+	"compileType": "miniprogram",
+	"libVersion": "1.9.1",
+	"appid": "wxb101a968d00557e7",
+	"projectname": "Shopping",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true
+	},
+	"condition": {}
+}
