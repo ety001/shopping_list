@@ -1,21 +1,16 @@
 <view>
-    <layout-head _pid="{{_pid}}"></layout-head>
-
     <!-- wxp template -->
     <view>
-        <view class="index-hd">
-            <image class="index-logo" src="https://s10.mogucdn.com/mlcdn/c45406/171122_5l92i48kb80j1fkha1fh1cd3h43i5_200x200.png"></image>
-            <view class="index-desc">MinUI-小程序</view>
-        </view>
+        <wxc-flex class="wrap" _pid="{{_pid}}">
+            <view class="input_box">
+                <wxc-input type="text" icon="cart" value="{{whatToAdd}}" placeholder="请输入待购商品" _pid="{{_pid}}"></wxc-input>
+            </view>
+            <view class="button_box">
+                <wxc-cc _pid="{{_pid}}">
+                    <wxc-button type="beauty" value="添加" _pid="{{_pid}}"></wxc-button>
+                </wxc-cc>
+            </view>
+        </wxc-flex>
 
-        <view class="index-bd">
-            Hello World
-        </view>
-
-        <view class="index-ft">
-            <view class="provider">Created by Min</view>
-        </view>
     </view>
-
-    <layout-foot _pid="{{_pid}}"></layout-foot>
 </view>

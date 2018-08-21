@@ -1,56 +1,41 @@
 <template>
   <view>
-    <view class="index-hd">
-      <image class="index-logo" src="https://s10.mogucdn.com/mlcdn/c45406/171122_5l92i48kb80j1fkha1fh1cd3h43i5_200x200.png"></image>
-      <view class="index-desc">MinUI-小程序</view>
-    </view>
+    <wxc-flex class="wrap">
+      <view class="input_box">
+        <wxc-input type="text" icon="cart" value="{{whatToAdd}}" placeholder="请输入待购商品"></wxc-input>
+      </view>
+      <view class="button_box">
+        <wxc-cc>
+          <wxc-button type="beauty" value="添加"></wxc-button>
+        </wxc-cc>
+      </view>
+    </wxc-flex>
 
-    <view class="index-bd">
-      Hello World
-    </view>
-
-    <view class="index-ft">
-      <view class="provider">Created by Min</view>
-    </view>
   </view>
-
 </template>
 
 <script>
 export default {
+  config: {
+    usingComponents: {
+      'wxc-input': '@minui/wxc-input',
+      'wxc-button': '@minui/wxc-button',
+      'wxc-flex': '@minui/wxc-flex',
+      'wxc-cc': '@minui/wxc-cc'
+    }
+  },
+  data: {
+    whatToAdd: null
+  },
+  methods: { }
 }
 </script>
 
 <style>
-.index-hd {
-  padding: 70rpx;
-  text-align: center;
+.input_box {
+  width:76%;
 }
-.index-bd {
-  padding: 20rpx 30rpx;
-  background-color:cadetblue;
-  color: #fff;
-  text-align: center;
-}
-.index-ft {
-  padding-bottom: 20rpx;
-  text-align: center;
-}
-.index-logo {
-  width: 100rpx;
-  height: 100rpx;
-}
-.index-desc {
-  margin-top: 20rpx;
-  color: #888888;
-  font-size: 28rpx;
-}
-
-.provider {
-  position: fixed;
-  width: 100%;
-  bottom: 120rpx;
-  color: #a9a9a9;
-  text-align: center;
+.button_box {
+  width: 18%;
 }
 </style>
