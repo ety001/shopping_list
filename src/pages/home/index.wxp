@@ -1,16 +1,45 @@
 <template>
   <view>
-    <wxc-flex class="wrap">
+    <wxc-flex>
       <view class="input_box">
         <wxc-input type="text" icon="cart" value="{{whatToAdd}}" placeholder="请输入待购商品"></wxc-input>
       </view>
       <view class="button_box">
         <wxc-cc>
-          <wxc-button type="beauty" value="添加"></wxc-button>
+          <wxc-button type="success" value="添加"></wxc-button>
         </wxc-cc>
       </view>
     </wxc-flex>
-
+    <wxc-panel title="我的清单">
+      <view class="content">
+        <wxc-flex wrap="wrap">
+          <view class="tag">
+            <wxc-button type="beauty" value="白菜"></wxc-button>
+          </view>
+          <view class="tag">
+            <wxc-button type="primary" value="西红柿"></wxc-button>
+          </view>
+          <view class="tag">
+            <wxc-button type="info" value="糖"></wxc-button>
+          </view>
+          <view class="tag">
+            <wxc-button type="primary" value="西瓜"></wxc-button>
+          </view>
+          <view class="tag">
+            <wxc-button type="warning" value="火锅底料"></wxc-button>
+          </view>
+        </wxc-flex>
+      </view>
+    </wxc-panel>
+    <view class="margin-top-30 margin-left-30">
+      <wxc-button type="secondary" value="清空我的清单"></wxc-button>
+    </view>
+    <wxc-panel title="历史商品">
+      <view class="content">
+        <view class="no-data">暂无数据</view>
+      </view>
+    </wxc-panel>
+    <wxc-loadmore is-end="{{true}}" text="感谢使用，欢迎分享"></wxc-loadmore>
   </view>
 </template>
 
@@ -21,7 +50,9 @@ export default {
       'wxc-input': '@minui/wxc-input',
       'wxc-button': '@minui/wxc-button',
       'wxc-flex': '@minui/wxc-flex',
-      'wxc-cc': '@minui/wxc-cc'
+      'wxc-cc': '@minui/wxc-cc',
+      'wxc-panel': '@minui/wxc-panel',
+      'wxc-loadmore': '@minui/wxc-loadmore'
     }
   },
   data: {
@@ -37,5 +68,24 @@ export default {
 }
 .button_box {
   width: 18%;
+}
+.margin-top-30 {
+  margin-top: 30rpx;
+}
+.margin-left-30 {
+  margin-left: 30rpx;
+}
+.content {
+  height: 40%;
+  padding-bottom: 30rpx;
+  padding-left: 30rpx;
+}
+.tag {
+  margin-top: 30rpx;
+  margin-left: 30rpx;
+}
+.no-data {
+  margin-top: 30rpx;
+  margin-left: 30rpx;
 }
 </style>
