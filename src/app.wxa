@@ -1,8 +1,5 @@
 <template>
-  <view>
-    <!-- wxp template -->
-    <page></page>
-  </view>
+  <page></page>
 </template>
 
 <script>
