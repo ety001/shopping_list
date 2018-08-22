@@ -23,7 +23,12 @@
       <view class="content" wx:if="{{myList.length>0}}">
         <wxc-flex wrap="wrap">
           <view class="tag" wx:for="{{myList}}" wx:key="{{index}}">
-            <wxc-button type="{{btnColor[index%4]}}" value="{{item}}"></wxc-button>
+            <wxc-button
+              type="{{btnColor[index%4]}}"
+              value="{{item}}"
+              bindlongpress="removeTag"
+              data-type="mylist"
+              data-tag="{{item}}"></wxc-button>
           </view>
         </wxc-flex>
       </view>
@@ -38,7 +43,13 @@
       <view class="content" wx:if="{{history.length>0}}">
         <wxc-flex wrap="wrap">
           <view class="tag" wx:for="{{history}}" wx:key="{{index}}">
-            <wxc-button type="{{btnColor[index%4]}}" value="{{item}}"></wxc-button>
+            <wxc-button
+              type="{{btnColor[index%4]}}"
+              value="{{item}}"
+              bindlongpress="removeTag"
+              data-type="history"
+              data-tag="{{item}}"
+              bindtap="addToMyList"></wxc-button>
           </view>
         </wxc-flex>
       </view>
@@ -50,10 +61,20 @@
       <wxc-button type="secondary" bindtap="clearHistory" value="清空历史商品"></wxc-button>
     </view>
     <wxc-loadmore is-end="{{true}}" text="感谢使用，欢迎分享"></wxc-loadmore>
+    <wxc-dialog
+      class="wxc-dialog"
+      title=""
+      content="{{dialogInfo}}"
+      confirm-text="{{dialogConfirmText}}"
+      cancel-text="{{dialogCancelText}}"
+      bindconfirm="onConfirm"
+      bindcancel="onCancel"></wxc-dialog>
   </view>
 </template>
 
 <script>
+let tmpType = null;
+let tmpTag = null;
 export default {
   config: {
     usingComponents: {
@@ -63,7 +84,8 @@ export default {
       'wxc-cc': '@minui/wxc-cc',
       'wxc-panel': '@minui/wxc-panel',
       'wxc-loadmore': '@minui/wxc-loadmore',
-      'wxc-mask': '@minui/wxc-mask'
+      'wxc-mask': '@minui/wxc-mask',
+      'wxc-dialog': '@minui/wxc-dialog'
     }
   },
   data: {
@@ -71,7 +93,10 @@ export default {
     whatToAdd: null,
     btnColor: ['beauty', 'primary', 'info', 'warning'],
     myList: [],
-    history: []
+    history: [],
+    dialogInfo: null,
+    dialogConfirmText: null,
+    dialogCancelText: null
   },
   updateWhatToAdd(e) {
     this.setData({
@@ -105,8 +130,74 @@ export default {
       data: []
     })
   },
+  removeTag(e) {
+    tmpType = e.target.dataset.type;
+    tmpTag = e.target.dataset.tag;
+    if (tmpType == 'mylist') {
+      this.setData({
+        'dialogInfo': `是否已购买 ${tmpTag}`,
+        'dialogConfirmText': '已购买',
+        'dialogCancelText': '还没有'
+      });
+    } else if (tmpType == 'history') {
+      this.setData({
+        'dialogInfo': `是否要删除 ${tmpTag}`,
+        'dialogConfirmText': '删除它',
+        'dialogCancelText': '取消'
+      });
+    } else {
+      tmpType = null;
+      tmpTag = null;
+    }
+    this.showDialog();
+  },
+  onConfirm(e) {
+    let tmpList = [];
+    if (tmpType == 'mylist') {
+      tmpList = this.data.myList;
+    } else {
+      tmpList = this.data.history;
+    }
+    const inx = tmpList.indexOf(tmpTag);
+    if (inx == -1) {
+      this.onCancel();
+    } else {
+      const tmp = [];
+      tmpList.forEach((item, i) => {
+        if (i!=inx) {
+          tmp.push(item);
+        }
+      });
+      if (tmpType == 'mylist') {
+        this.setData({
+          myList: tmp
+        });
+        wx.setStorage({
+          key: 'myList',
+          data: tmp
+        })
+      } else {
+        this.setData({
+          history: tmp
+        });
+        wx.setStorage({
+          key: 'history',
+          data: tmp
+        })
+      }
+      this.hideDialog();
+    }
+  },
+  onCancel(e) {
+    tmpType = null;
+    tmpTag = null;
+    this.hideDialog();
+  },
+  addToMyList(e) {
+    this.addToList('mylist', this.data.myList, e.target.dataset.tag);
+  },
   addToList(listType, originData, newVal) {
-    console.log('get_into_addtolist', listType, originData, newVal, originData.indexOf(newVal));
+    // console.log('get_into_addtolist', listType, originData, newVal, originData.indexOf(newVal));
     if (originData.indexOf(newVal) == -1) {
       originData.push(newVal);
       if (listType == 'history') {
@@ -127,6 +218,14 @@ export default {
         });
       }
     }
+  },
+  showDialog() {
+    let dialogComponent = this.selectComponent('.wxc-dialog')
+    dialogComponent && dialogComponent.show();
+  },
+  hideDialog() {
+    let dialogComponent = this.selectComponent('.wxc-dialog')
+    dialogComponent && dialogComponent.hide();
   },
   onShow() {
     wx.getStorage({
