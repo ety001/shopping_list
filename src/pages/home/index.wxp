@@ -1,44 +1,54 @@
 <template>
   <view>
+    <wxc-mask status="{{maskStatus}}" locked="true" content-align="cc" background-color="#ddd" opacity="0.96">
+      <view style="font-size: 28rpx;">数据加载中...</view>
+    </wxc-mask>
     <wxc-flex>
       <view class="input_box">
-        <wxc-input type="text" icon="cart" value="{{whatToAdd}}" placeholder="请输入待购商品"></wxc-input>
+        <wxc-input 
+          type="text"
+          icon="cart"
+          value="{{whatToAdd}}"
+          placeholder="请输入待购商品"
+          confirm-type="done"
+          bindinput="updateWhatToAdd"></wxc-input>
       </view>
       <view class="button_box">
         <wxc-cc>
-          <wxc-button type="success" value="添加"></wxc-button>
+          <wxc-button type="success" bindtap="addTag" value="添加"></wxc-button>
         </wxc-cc>
       </view>
     </wxc-flex>
     <wxc-panel title="我的清单">
-      <view class="content">
+      <view class="content" wx:if="{{myList.length>0}}">
         <wxc-flex wrap="wrap">
-          <view class="tag">
-            <wxc-button type="beauty" value="白菜"></wxc-button>
-          </view>
-          <view class="tag">
-            <wxc-button type="primary" value="西红柿"></wxc-button>
-          </view>
-          <view class="tag">
-            <wxc-button type="info" value="糖"></wxc-button>
-          </view>
-          <view class="tag">
-            <wxc-button type="primary" value="西瓜"></wxc-button>
-          </view>
-          <view class="tag">
-            <wxc-button type="warning" value="火锅底料"></wxc-button>
+          <view class="tag" wx:for="{{myList}}" wx:key="{{index}}">
+            <wxc-button type="{{btnColor[index%4]}}" value="{{item}}"></wxc-button>
           </view>
         </wxc-flex>
       </view>
-    </wxc-panel>
-    <view class="margin-top-30 margin-left-30">
-      <wxc-button type="secondary" value="清空我的清单"></wxc-button>
-    </view>
-    <wxc-panel title="历史商品">
-      <view class="content">
+      <view class="content" wx:if="{{myList.length==0}}">
         <view class="no-data">暂无数据</view>
       </view>
     </wxc-panel>
+    <view class="margin-top-30 margin-left-30" wx:if="{{myList.length>0}}">
+      <wxc-button type="secondary" bindtap="clearMyList" value="清空我的清单"></wxc-button>
+    </view>
+    <wxc-panel title="历史商品">
+      <view class="content" wx:if="{{history.length>0}}">
+        <wxc-flex wrap="wrap">
+          <view class="tag" wx:for="{{history}}" wx:key="{{index}}">
+            <wxc-button type="{{btnColor[index%4]}}" value="{{item}}"></wxc-button>
+          </view>
+        </wxc-flex>
+      </view>
+      <view class="content" wx:if="{{history.length==0}}">
+        <view class="no-data">暂无数据</view>
+      </view>
+    </wxc-panel>
+    <view class="margin-top-30 margin-left-30" wx:if="{{history.length>0}}">
+      <wxc-button type="secondary" bindtap="clearHistory" value="清空历史商品"></wxc-button>
+    </view>
     <wxc-loadmore is-end="{{true}}" text="感谢使用，欢迎分享"></wxc-loadmore>
   </view>
 </template>
@@ -52,13 +62,105 @@ export default {
       'wxc-flex': '@minui/wxc-flex',
       'wxc-cc': '@minui/wxc-cc',
       'wxc-panel': '@minui/wxc-panel',
-      'wxc-loadmore': '@minui/wxc-loadmore'
+      'wxc-loadmore': '@minui/wxc-loadmore',
+      'wxc-mask': '@minui/wxc-mask'
     }
   },
   data: {
-    whatToAdd: null
+    maskStatus: 'show',
+    whatToAdd: null,
+    btnColor: ['beauty', 'primary', 'info', 'warning'],
+    myList: [],
+    history: []
   },
-  methods: { }
+  updateWhatToAdd(e) {
+    this.setData({
+      whatToAdd: e.detail.value
+    });
+  },
+  addTag(e) {
+    if (this.data.whatToAdd == null) return;
+    console.log(this.data.whatToAdd);
+    this.addToList('history', this.data.history, this.data.whatToAdd);
+    this.addToList('mylist', this.data.myList, this.data.whatToAdd);
+    this.setData({
+      whatToAdd: null
+    });
+  },
+  clearMyList(e) {
+    this.setData({
+      myList: []
+    });
+    wx.setStorage({
+      key: 'myList',
+      data: []
+    });
+  },
+  clearHistory(e) {
+    this.setData({
+      history: []
+    });
+    wx.setStorage({
+      key: 'history',
+      data: []
+    })
+  },
+  addToList(listType, originData, newVal) {
+    console.log('get_into_addtolist', listType, originData, newVal, originData.indexOf(newVal));
+    if (originData.indexOf(newVal) == -1) {
+      originData.push(newVal);
+      if (listType == 'history') {
+        this.setData({
+          history: originData
+        });
+        wx.setStorage({
+          key: 'history',
+          data: originData
+        });
+      } else if (listType == 'mylist') {
+        this.setData({
+          myList: originData
+        });
+        wx.setStorage({
+          key: 'myList',
+          data: originData
+        });
+      }
+    }
+  },
+  onShow() {
+    wx.getStorage({
+      key: 'myList',
+      success: (res1) => {
+        console.log('get_my_list', res1);
+        this.setData({
+          myList: res1.data
+        });
+        wx.getStorage({
+          key: 'history',
+          success: (res2) => {
+            console.log('get_history', res2);
+            this.setData({
+              history: res2.data
+            });
+            this.setData({
+              maskStatus: 'hide'
+            });
+          },
+          fail: (res2) => {
+            this.setData({
+              maskStatus: 'hide'
+            });
+          }
+        })
+      },
+      fail: (res1) => {
+        this.setData({
+          maskStatus: 'hide'
+        });
+      }
+    });
+  }
 }
 </script>
 
