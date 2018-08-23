@@ -18,7 +18,8 @@
           value="{{whatToAdd}}"
           placeholder="请输入待购商品"
           confirm-type="done"
-          bindinput="updateWhatToAdd"></wxc-input>
+          bindinput="updateWhatToAdd"
+          bindconfirm="addTag"></wxc-input>
       </view>
       <view class="button_box">
         <wxc-cc>
