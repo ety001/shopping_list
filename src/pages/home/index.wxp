@@ -298,6 +298,16 @@ export default {
         });
       }
     });
+  },
+  onShareAppMessage: function (res) {
+    if (res.from === 'button') {
+      // 来自页面内转发按钮
+    }
+    return {
+      title: '一个超好用的超市购物清单小程序',
+      path: '/page/home/index',
+      imageUrl: 'https://i.loli.net/2018/08/23/5b7e8d1238a00.png'
+    }
   }
 }
 </script>
