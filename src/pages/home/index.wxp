@@ -19,7 +19,9 @@
           placeholder="请输入待购商品"
           confirm-type="done"
           bindinput="updateWhatToAdd"
-          bindconfirm="addTag"></wxc-input>
+          bindconfirm="addTag"
+          focus="{{tagInputFocus}}"
+          bindblur="tagInputBlur"></wxc-input>
       </view>
       <view class="button_box">
         <wxc-cc>
@@ -111,7 +113,8 @@ export default {
     dialogConfirmText: null,
     dialogCancelText: null,
     toast_show: false,
-    toast_msg: null
+    toast_msg: null,
+    tagInputFocus: true
   },
   updateWhatToAdd(e) {
     this.setData({
@@ -127,7 +130,13 @@ export default {
     this.addToList('history', this.data.history, this.data.whatToAdd);
     this.addToList('mylist', this.data.myList, this.data.whatToAdd);
     this.setData({
-      whatToAdd: null
+      whatToAdd: null,
+      tagInputFocus: true
+    });
+  },
+  tagInputBlur(e) {
+    this.setData({
+      tagInputFocus: false
     });
   },
   showMsg(msg) {
