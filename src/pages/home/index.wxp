@@ -3,7 +3,14 @@
     <wxc-mask status="{{maskStatus}}" locked="true" content-align="cc" background-color="#ddd" opacity="0.96">
       <view style="font-size: 28rpx;">数据加载中...</view>
     </wxc-mask>
-    <wxc-flex>
+    <wxc-notice
+      close="{{true}}"
+      bg-color="#ff9300"
+      bg-rgba="rgba(255, 147, 0, 0)"
+      show-icon="{{true}}"
+      notice="Tips: 长按商品可以删除~"></wxc-notice>
+
+    <wxc-flex class="margin-top-20">
       <view class="input_box">
         <wxc-input 
           type="text"
@@ -69,6 +76,9 @@
       cancel-text="{{dialogCancelText}}"
       bindconfirm="onConfirm"
       bindcancel="onCancel"></wxc-dialog>
+    <wxc-toast
+      is-show="{{toast_show}}"
+      text="{{toast_msg}}"></wxc-toast>
   </view>
 </template>
 
@@ -85,7 +95,9 @@ export default {
       'wxc-panel': '@minui/wxc-panel',
       'wxc-loadmore': '@minui/wxc-loadmore',
       'wxc-mask': '@minui/wxc-mask',
-      'wxc-dialog': '@minui/wxc-dialog'
+      'wxc-dialog': '@minui/wxc-dialog',
+      'wxc-toast': '@minui/wxc-toast',
+      'wxc-notice': '@minui/wxc-notice'
     }
   },
   data: {
@@ -96,7 +108,9 @@ export default {
     history: [],
     dialogInfo: null,
     dialogConfirmText: null,
-    dialogCancelText: null
+    dialogCancelText: null,
+    toast_show: false,
+    toast_msg: null
   },
   updateWhatToAdd(e) {
     this.setData({
@@ -104,13 +118,28 @@ export default {
     });
   },
   addTag(e) {
-    if (this.data.whatToAdd == null) return;
+    if (this.data.whatToAdd == null) {
+      this.showMsg('请输入商品名');
+      return;
+    }
     console.log(this.data.whatToAdd);
     this.addToList('history', this.data.history, this.data.whatToAdd);
     this.addToList('mylist', this.data.myList, this.data.whatToAdd);
     this.setData({
       whatToAdd: null
     });
+  },
+  showMsg(msg) {
+    this.setData({
+      toast_show: true,
+      toast_msg: msg
+    });
+    setTimeout(() => {
+      this.setData({
+        toast_show: false,
+        toast_msg: null
+      });
+    }, 2000);
   },
   clearMyList(e) {
     this.setData({
@@ -275,6 +304,9 @@ export default {
 }
 .margin-left-30 {
   margin-left: 30rpx;
+}
+.margin-top-20 {
+  margin-top: 20rpx !important;
 }
 .content {
   height: 40%;
