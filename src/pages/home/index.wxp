@@ -304,9 +304,9 @@ export default {
       // 来自页面内转发按钮
     }
     return {
-      title: '一个超好用的超市购物清单小程序',
+      title: '去超市又有忘记要买的东西了吧',
       path: '/page/home/index',
-      imageUrl: 'https://i.loli.net/2018/08/23/5b7e8d1238a00.png'
+      imageUrl: 'https://i.loli.net/2018/08/24/5b7f4b679022f.jpg'
     }
   }
 }
