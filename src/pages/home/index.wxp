@@ -305,7 +305,7 @@ export default {
     }
     return {
       title: '去超市又有忘记要买的东西了吧',
-      path: '/page/home/index',
+      path: '/pages/home/index',
       imageUrl: 'https://i.loli.net/2018/08/24/5b7f4b679022f.jpg'
     }
   }
